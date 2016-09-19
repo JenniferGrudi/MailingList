@@ -20,8 +20,7 @@ post '/input' do
 	user_email = params[:user_email]
 	db.exec("INSERT INTO subscribers (email) VALUES ('#{user_email}');")
 
-
-	erb :index, :locals => {:message => "Thank you for subscribing"}
+	erb :index, :locals => {:message => 'Thank you for subscribing'}
 end
 
 
@@ -30,12 +29,15 @@ get '/admin_email' do
 end	
 
 post '/contact-form' do
-  message = params[:message]
   subject = params[:subject]
+  subscribers = db.exec("SELECT email FROM subscribers;")
+  message = params[:message]
+subscribers. each do |email|
+	emails = email["email"] 
  
 
     Pony.mail(
-        :to => 'joseph.mckenzie@minedminds.org', 
+        :to => "#{emails}", 
         :from => 'info@minedminds.org',
         :subject => "#{subject}", 
         :content_type => 'text/html', 
@@ -51,8 +53,8 @@ post '/contact-form' do
            :domain               => "localhost" 
         }
       )
-
-  erb :subscribers
+end
+  erb :subscribers, :locals => {:subscribers => subscribers}
 end 
 
 
